@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#030817">
+<title>PAINEL PRO FF</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23030817'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%2300bfff' font-weight='bold'%3EFF%3C/text%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:16px;min-height:100vh;
+ background:radial-gradient(ellipse at top,#10356d,#030817 65%);
+ color:#eef8ff;font-family:Arial,sans-serif
+}
+header{
+ text-align:center;padding:25px 10px;
+ border:1px solid #00bfff;border-radius:20px;
+ background:linear-gradient(140deg,#092957,#020611);
+ box-shadow:0 0 20px #006bff
+}
+.logo{font-size:38px;font-weight:900;color:#00bfff}
+h1{font-size:32px;font-style:italic;margin:8px 0}
+h1 span{color:#00bfff}
+header p{color:#a6dfff;font-size:12px;letter-spacing:2px}
+.notice{
+ margin:16px 0;padding:12px;border-left:3px solid #00bfff;
+ background:#071b35;border-radius:7px;
+ color:#b6d5ef;font-size:12px;line-height:1.5
+}
+h2{font-size:16px;color:#00c4ff;margin:24px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{
+ padding:14px;background:linear-gradient(145deg,#0a2040,#040b19);
+ border:1px solid #087fc0;border-radius:13px;
+ box-shadow:0 0 8px #00396a
+}
+.card h3{font-size:13px;margin:0 0 8px}
+.card p{font-size:11px;color:#91b4d8;min-height:25px}
+button{
+ cursor:pointer;color:white;background:#132b47;
+ border:1px solid #176eaa;border-radius:9px;
+ padding:10px;font-weight:bold
+}
+.toggle{width:100%}
+.toggle.on{background:#00baff;color:#001326;border-color:#7ce8ff}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+.primary{background:linear-gradient(90deg,#087bff,#00c8ff);color:#001326;border:0}
+.status{
+ margin-top:16px;border:1px solid #087fc0;border-radius:12px;
+ padding:15px;background:#06152b
+}
+#state{color:#36f5a0;font-weight:bold}
+footer{text-align:center;font-size:11px;color:#7897b9;margin:24px 0 8px}
+button:focus-visible{outline:2px solid white;outline-offset:3px}
+@media(max-width:340px){body{padding:9px}.grid{gap:7px}.card{padding:10px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">⚡ FF ⚡</div>
+ <h1>PAINEL <span>PRO</span></h1>
+ <p>BLUE NEON • GAMING INTERFACE</p>
+</header>
+
+<div class="notice">
+ 💙 <b>PAINEL PRO FF</b><br>
+ Interface demonstrativa. Os controles mudam apenas o visual desta página e não modificam o jogo.
+</div>
+
+<h2>◆ PAINEL PRINCIPAL</h2>
+<div class="grid" id="main"></div>
+
+<h2>◆ OPÇÕES EXTRAS</h2>
+<div class="grid" id="extra"></div>
+
+<div class="status">
+ <b>STATUS DA INTERFACE</b>
+ <p id="state">● DEMO PRONTA</p>
+ <small id="count">0 opções ligadas</small>
+</div>
+
+<div class="actions">
+ <button class="primary" id="allOn">ATIVAR DEMO</button>
+ <button id="allOff">DESATIVAR TUDO</button>
+ <button id="fullscreen">⛶ TELA CHEIA</button>
+ <button id="reset">RESTAURAR</button>
+</div>
+
+<footer>PAINEL PRO FF • HTML EDITION</footer>
+
+<script>
+const principais=[
+ ["🎯","AIM BOT"],["◎","HEAD MIRA FULL"],
+ ["♙","FULL BODY"],["◉","AIM FOV"],
+ ["⚡","HEADTRICK"],["◇","ESP NAME"],
+ ["🛡","ANTI-BAN DEMO"],["🔒","AIM LOCK DEMO"]
+];
+const extras=[
+ ["〰️","SEM TREMOR DEMO"],["🎯","PRECISÃO DEMO"],
+ ["📦","AUTO LOOT DEMO"],["🖥","MODO EMULADOR"]
+];
+
+function montar(lista,id){
+ const area=document.getElementById(id);
+ lista.forEach(([icone,nome])=>{
+  const card=document.createElement("div");
+  card.className="card";
+  const h=document.createElement("h3");
+  h.textContent=icone+" "+nome;
+  const p=document.createElement("p");
+  p.textContent="Controle visual de demonstração";
+  const b=document.createElement("button");
+  b.className="toggle";
+  b.textContent="DESLIGADO";
+  b.setAttribute("aria-pressed","false");
+  b.onclick=()=>{
+   const ligado=!b.classList.contains("on");
+   b.classList.toggle("on",ligado);
+   b.textContent=ligado?"LIGADO":"DESLIGADO";
+   b.setAttribute("aria-pressed",String(ligado));
+   atualizar();
+  };
+  card.append(h,p,b);
+  area.append(card);
+ });
+}
+
+function botoes(){
+ return [...document.querySelectorAll(".toggle")];
+}
+function definirTodos(valor){
+ botoes().forEach(b=>{
+  b.classList.toggle("on",valor);
+  b.textContent=valor?"LIGADO":"DESLIGADO";
+  b.setAttribute("aria-pressed",String(valor));
+ });
+ atualizar();
+}
+function atualizar(){
+ const n=botoes().filter(b=>b.classList.contains("on")).length;
+ document.getElementById("state").textContent=
+  n?"● DEMONSTRAÇÃO ATIVA":"● DEMO PRONTA";
+ document.getElementById("count").textContent=
+  n+" de "+botoes().length+" opções ligadas";
+}
+montar(principais,"main");
+montar(extras,"extra");
+document.getElementById("allOn").onclick=()=>definirTodos(true);
+document.getElementById("allOff").onclick=()=>definirTodos(false);
+document.getElementById("reset").onclick=()=>definirTodos(false);
+
+document.getElementById("fullscreen").onclick=async()=>{
+ try{
+  if(!document.fullscreenElement){
+   await document.documentElement.requestFullscreen();
+  }else{
+   await document.exitFullscreen();
+  }
+ }catch(e){
+  alert("A tela cheia não está disponível nesta prévia. Tente abrir no navegador.");
+ }
+};
+document.addEventListener("fullscreenchange",()=>{
+ document.getElementById("fullscreen").textContent=
+ document.fullscreenElement?"SAIR DA TELA CHEIA":"⛶ TELA CHEIA";
+});
+atualizar();
+</script>
+</body>
+</html>
